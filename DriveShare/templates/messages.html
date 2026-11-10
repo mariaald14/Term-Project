@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>
+        Messages
+    </h1>
+    <div class="panel">
+        <h3>
+            Send a message
+        </h3>
+        <p>
+            Enter the email address of a registered owner or renter.
+        </p>
+        <form method="post">
+            <input type="hidden" name="csrf" value="{{csrf}}">
+            <label>
+                Send to (email)
+                <input type="email" name="recipient" required>
+            </label>
+            <label>
+                Message
+                <textarea name="text" rows="3" required>
+                </textarea>
+            </label>
+            <button>
+                Send message
+            </button>
+        </form>
+    </div>
+    <h2>
+        My messages
+    </h2>
+    {% for message in messages %}
+        <div class="panel">
+            <strong>
+                {{message['sender_name']}}  ->  {{message['recipient_name']}}
+            </strong>
+            <small class="date">
+                {{message['created_at']}}
+            </small>
+            <p>
+                {{message['text']}}
+            </p>
+        </div>
+    {% else %}
+        <p>
+            No messages yet.
+        </p>
+    {% endfor %}
+{% endblock %}

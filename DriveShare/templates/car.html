@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="panel">
+        <div class="car-banner">
+            Just pretend this is a pic of a car
+        </div>
+        <p class="eyebrow">
+            {{car['location']}}
+        </p>
+        <h1>
+            {{car['year']}} {{car['make']}} {{car['model']}}
+        </h1>
+        <p>
+            Owner: {{car['owner_name']}}  -  Mileage: {{car['mileage']}}
+        </p>
+        <p>
+            {{car['description']}}
+        </p>
+        <h2>
+            ${{'%.2f'|format(car['price'])}} / day
+        </h2>
+        {% if user and user['id'] != car['owner_id'] %}
+            <div class="split">
+                <div>
+                    <h3>
+                        Book this car
+                    </h3>
+                    <p>
+                        The price is calculated using the dates you choose. No real payment is needed.
+                    </p>
+                    <form method="post" action="{{url_for('book_car',car_id=car['id'])}}">
+                        <input type="hidden" name="csrf" value="{{csrf}}">
+                        <label>
+                            Pickup
+                            <input type="datetime-local" name="start" required>
+                        </label>
+                        <label>
+                            Return
+                            <input type="datetime-local" name="end" required>
+                        </label>
+                        <button>
+                            Reserve car
+                        </button>
+                    </form>
+                </div>
+                <div>
+                    <h3>
+                        Watch this car
+                    </h3>
+                    <p>
+                        Get an alert when the price meets your limit or the car opens up for your dates.
+                    </p>
+                    <form method="post" action="{{url_for('watch',car_id=car['id'])}}">
+                        <input type="hidden" name="csrf" value="{{csrf}}">
+                        <label>
+                            My maximum $/day
+                            <input type="number" name="max_price" step="0.01" min="1" required>
+                        </label>
+                        <label>
+                            Start date (optional)
+                            <input type="datetime-local" name="start">
+                        </label>
+                        <label>
+                            End date (optional)
+                            <input type="datetime-local" name="end">
+                        </label>
+                        <button class="secondary">
+                            Add to watchlist
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% elif not user %}
+            <p>
+                <a href="{{url_for('login')}}">
+                    Log in
+                </a> to book or watch this car.
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}

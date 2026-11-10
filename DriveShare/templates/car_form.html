@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="panel">
+        <h1>
+            {{'Edit car details' if car else 'List a car'}}
+        </h1>
+        <form method="post" class="two">
+            <input type="hidden" name="csrf" value="{{csrf}}">
+            {% if not car %}
+                <label>
+                    Make
+                    <input name="make" placeholder="Honda" required>
+                </label>
+                <label>
+                    Model
+                    <input name="model" placeholder="Civic" required>
+                </label>
+                <label>
+                    Year
+                    <input type="number" name="year" min="1900" max="2100" required>
+                </label>
+            {% else %}
+                <p>
+                    <b>
+                        {{car['year']}} {{car['make']}} {{car['model']}}
+                    </b>
+                </p>
+                <p>
+                    To change the make, model, or year, create a new listing.
+                </p>
+            {% endif %}
+            <label>
+                Mileage
+                <input type="number" name="mileage" min="0" value="{{car['mileage'] if car else ''}}" required>
+            </label>
+            <label>
+                Pickup location
+                <input name="location" value="{{car['location'] if car else ''}}" required>
+            </label>
+            <label>
+                Daily price ($)
+                <input type="number" name="price" min="1" step="0.01" value="{{car['price'] if car else ''}}" required>
+            </label>
+            <label class="wide">
+                Description
+                <textarea name="description" rows="4" placeholder="Tell renters a little about your car">
+                    {{car['description'] if car else ''}}
+                </textarea>
+            </label>
+            <button>
+                {{'Save changes' if car else 'Create listing'}}
+            </button>
+        </form>
+    </div>
+{% endblock %}

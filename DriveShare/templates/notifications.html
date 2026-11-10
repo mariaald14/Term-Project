@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>
+        Notifications
+    </h1>
+    {% for alert in notifications %}
+        <div class="panel">
+            <p>
+                {{alert['message']}}
+            </p>
+            <small>
+                {{alert['created_at']}}
+            </small>
+        </div>
+    {% else %}
+        <p>
+            No notifications yet.
+        </p>
+    {% endfor %}
+{% endblock %}

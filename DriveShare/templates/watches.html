@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>
+        My watchlist
+    </h1>
+    <p>
+        Price alerts and availability alerts will appear in Notifications.
+    </p>
+    {% for watch in watches %}
+        <div class="panel between">
+            <div>
+                <h3>
+                    <a href="{{url_for('car_details',car_id=watch['car_id'])}}">
+                        {{watch['make']}} {{watch['model']}}
+                    </a>
+                </h3>
+                <p>
+                    Current price: ${{'%.2f'|format(watch['price'])}}/day  -  My limit: ${{'%.2f'|format(watch['max_price'])}}/day
+                </p>
+                <p>
+                    {{(watch['start_at'] ~ ' to ' ~ watch['end_at']) if watch['start_at'] else 'Price alerts only'}}
+                </p>
+            </div>
+            <form method="post" action="{{url_for('unwatch',watch_id=watch['id'])}}">
+                <input type="hidden" name="csrf" value="{{csrf}}">
+                <button class="secondary">
+                    Remove
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <p>
+            You are not watching any cars.
+        </p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="between">
+        <h1>
+            My car listings
+        </h1>
+        <a class="btn" href="{{url_for('new_car')}}">
+            + Add car
+        </a>
+    </div>
+    <div class="cards">
+        {% for car in cars %}
+            <div class="panel">
+                <h3>
+                    {{car['year']}} {{car['make']}} {{car['model']}}
+                </h3>
+                <p>
+                    {{car['location']}}  -  ${{'%.2f'|format(car['price'])}}/day
+                </p>
+                <p>
+                    Status: 
+                    <b>
+                        {{'Listed' if car['active'] else 'Hidden'}}
+                    </b>
+                </p>
+                <a href="{{url_for('edit_car',car_id=car['id'])}}">
+                    Edit details
+                </a>
+                <form method="post" action="{{url_for('toggle_car',car_id=car['id'])}}">
+                    <input type="hidden" name="csrf" value="{{csrf}}">
+                    <button class="secondary">
+                        {{'Hide listing' if car['active'] else 'Make available'}}
+                    </button>
+                </form>
+                <h4>
+                    Block dates on your calendar
+                </h4>
+                <form method="post" action="{{url_for('block_dates',car_id=car['id'])}}">
+                    <input type="hidden" name="csrf" value="{{csrf}}">
+                    <label>
+                        Start
+                        <input type="datetime-local" name="start" required>
+                    </label>
+                    <label>
+                        End
+                        <input type="datetime-local" name="end" required>
+                    </label>
+                    <button class="secondary">
+                        Block these dates
+                    </button>
+                </form>
+                <h4>
+                    Unavailable dates
+                </h4>
+                {% for block in blocks if block['car_id']==car['id'] %}
+                    <p>
+                        {{block['start_at']|replace('T',' ')}} to {{block['end_at']|replace('T',' ')}} 
+                        <form class="inline" method="post" action="{{url_for('remove_block',block_id=block['id'])}}">
+                            <input type="hidden" name="csrf" value="{{csrf}}">
+                            <button class="link">
+                                Remove
+                            </button>
+                        </form>
+                    </p>
+                {% else %}
+                    <p>
+                        No dates blocked.
+                    </p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>
+                You have not listed any cars yet.
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

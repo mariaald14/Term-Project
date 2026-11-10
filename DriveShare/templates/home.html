@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+    <section class="hero">
+        <p class="eyebrow">
+            RENT FROM LOCAL OWNERS
+        </p>
+        <h1>
+            Find your next ride.
+        </h1>
+        <p>
+            Search available cars, choose your dates, and book in a few steps.
+        </p>
+        <form class="search" method="get">
+            <label>
+                City or car
+                <input name="location" placeholder="Dearborn or Toyota" value="{{request.args.get('location','')}}">
+            </label>
+            <label>
+                Start
+                <input type="datetime-local" name="start" value="{{request.args.get('start','')}}">
+            </label>
+            <label>
+                End
+                <input type="datetime-local" name="end" value="{{request.args.get('end','')}}">
+            </label>
+            <label>
+                Maximum $/day
+                <input type="number" step="0.01" min="1" name="max_price" value="{{request.args.get('max_price','')}}">
+            </label>
+            <button>
+                Search cars
+            </button>
+        </form>
+    </section>
+    <h2>
+        Available listings
+    </h2>
+    <div class="cards">
+        {% for car in cars %}
+            <article class="card">
+                <div class="car-art">
+                    Just pretend this is a pic of a car
+                </div>
+                <div class="card-content">
+                    <small>
+                        {{car['year']}}  -  {{car['location']}}
+                    </small>
+                    <h3>
+                        {{car['make']}} {{car['model']}}
+                    </h3>
+                    <p>
+                        {{car['mileage']}} miles  -  {{car['owner_name']}}
+                    </p>
+                    <div class="between">
+                        <strong>
+                            ${{ '%.2f'|format(car['price']) }} 
+                            <small>
+                                / day
+                            </small>
+                        </strong>
+                        <a class="btn small" href="{{url_for('car_details',car_id=car['id'])}}">
+                            View car
+                        </a>
+                    </div>
+                </div>
+            </article>
+        {% else %}
+            <p>
+                No cars match your search yet. Owners can add one using List a car.
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

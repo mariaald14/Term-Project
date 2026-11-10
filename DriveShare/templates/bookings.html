@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>
+        Bookings
+    </h1>
+    <p>
+        You can view upcoming bookings and manage payments for your rentals.
+    </p>
+    {% for booking in bookings %}
+        <div class="panel">
+            <div class="between">
+                <h3>
+                    {{booking['make']}} {{booking['model']}}  -  #{{booking['id']}}
+                </h3>
+                <span class="tag">
+                    {{booking['status']}}
+                </span>
+            </div>
+            <p>
+                Renter: {{booking['renter_name']}}  -  {{booking['start_at']|replace('T',' ')}} to {{booking['end_at']|replace('T',' ')}}
+            </p>
+            <h3>
+                ${{'%.2f'|format(booking['total'])}}
+            </h3>
+            {% if user['id']==booking['renter_id'] and booking['status']=='pending' %}
+                <form class="inline" method="post" action="{{url_for('pay',booking_id=booking['id'])}}">
+                    <input type="hidden" name="csrf" value="{{csrf}}">
+                    <button>
+                        Pay ${{'%.2f'|format(booking['total'])}} (demo)
+                    </button>
+                </form>
+                <form class="inline" method="post" action="{{url_for('cancel',booking_id=booking['id'])}}">
+                    <input type="hidden" name="csrf" value="{{csrf}}">
+                    <button class="secondary">
+                        Cancel booking
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>
+            No bookings yet. Visit Find cars to make one.
+        </p>
+    {% endfor %}
+{% endblock %}
